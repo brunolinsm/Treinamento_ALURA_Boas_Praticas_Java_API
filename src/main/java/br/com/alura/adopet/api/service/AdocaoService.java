@@ -7,6 +7,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.alura.adopet.api.dto.AprovacaoAdocaoDto;
+import br.com.alura.adopet.api.dto.ReprovacaoAdocaoDto;
+import br.com.alura.adopet.api.dto.SolicitacaoAdocaoDto;
 import br.com.alura.adopet.api.exception.ValidacaoException;
 import br.com.alura.adopet.api.model.Adocao;
 import br.com.alura.adopet.api.model.StatusAdocao;
@@ -21,7 +24,7 @@ public class AdocaoService {
 	@Autowired
     private EmailService emailService;
 	
-	public void solicitar(Adocao adocao){
+	public void solicitar(SolicitacaoAdocaoDto dto){
 		if (adocao.getPet().getAdotado() == true) {
 			throw new ValidacaoException("Pet já foi adotado!");
         } else {
@@ -53,14 +56,14 @@ public class AdocaoService {
         emailService.enviarEmail(adocao.getPet().getAbrigo().getEmail(),"Solicitação de adoção", "Olá " +adocao.getPet().getAbrigo().getNome() +"!\n\nUma solicitação de adoção foi registrada hoje para o pet: " +adocao.getPet().getNome() +". \nFavor avaliar para aprovação ou reprovação.");
 	}
 	
-	public void aprovar(Adocao adocao){
+	public void aprovar(AprovacaoAdocaoDto dto){
 		adocao.setStatus(StatusAdocao.APROVADO);
         repository.save(adocao);
         
         emailService.enviarEmail(adocao.getPet().getAbrigo().getEmail(),"Adoção aprovada", "Parabéns " +adocao.getTutor().getNome() +"!\n\nSua adoção do pet " +adocao.getPet().getNome() +", solicitada em " +adocao.getData().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")) +", foi aprovada.\nFavor entrar em contato com o abrigo " +adocao.getPet().getAbrigo().getNome() +" para agendar a busca do seu pet.");
 	}
 
-	public void reprovar(Adocao adocao){
+	public void reprovar(ReprovacaoAdocaoDto dto){
 		adocao.setStatus(StatusAdocao.REPROVADO);
         repository.save(adocao);
   
