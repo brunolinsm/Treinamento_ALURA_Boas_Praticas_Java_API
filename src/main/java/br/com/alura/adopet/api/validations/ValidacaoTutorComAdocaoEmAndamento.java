@@ -23,7 +23,6 @@ public class ValidacaoTutorComAdocaoEmAndamento implements ValidacaoSolicitacaoA
     private TutorRepository tutorRepository;
 	
 	public void validar(SolicitacaoAdocaoDto dto) {
-		
 		List<Adocao> adocoes = adocaoRepository.findAll();
 		Tutor tutor = tutorRepository.getReferenceById(dto.idTutor());
 		for (Adocao a : adocoes) {
